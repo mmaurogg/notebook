@@ -1,21 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:notebook/src/model/note_model.dart';
+import 'package:notebook/src/providers/notes_provider.dart';
+import 'package:provider/provider.dart';
 
-class NoteDetailPage extends StatelessWidget {
-  final String id;
+class NoteDetailPage extends StatefulWidget {
+  final int id;
   const NoteDetailPage({super.key, required this.id});
 
   @override
+  State<NoteDetailPage> createState() => _NoteDetailPageState();
+}
+
+class _NoteDetailPageState extends State<NoteDetailPage> {
+  Note? note;
+
+  @override
+  void initState() {
+    context.read<NotesProvider>().getNoteById(widget.id).then((value) {
+      setState(() {
+        note = value;
+      });
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final note = Note(
-      id: id,
-      title: "Sample Note Title",
-      date: "2024-01-20",
-      hasAttachment: true,
-    );
     return Scaffold(
       appBar: AppBar(title: Text('Note Detail')),
-      body: NoteDetailView(note: note),
+      body: note == null
+          ? Center(child: CircularProgressIndicator())
+          : NoteDetailView(note: note!),
     );
   }
 }
@@ -52,7 +67,7 @@ class NoteDetailView extends StatelessWidget {
 
               SizedBox(height: 24),
 
-              if (note.hasAttachment)
+              /*  if (note.hasAttachment)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -74,8 +89,7 @@ class NoteDetailView extends StatelessWidget {
                       style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                     ),
                   ],
-                ),
-
+                ), */
               SizedBox(height: 24),
 
               Row(
@@ -84,7 +98,10 @@ class NoteDetailView extends StatelessWidget {
                   TextButton(onPressed: () {}, child: Text('Edit')),
                   SizedBox(width: 8),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<NotesProvider>().removeNote(note);
+                      Navigator.pop(context);
+                    },
                     child: Text('Delete', style: TextStyle(color: Colors.red)),
                   ),
                   SizedBox(width: 8),

@@ -21,9 +21,9 @@ class NoteShortWidget extends StatelessWidget {
         leading: Icon(Icons.note, color: Colors.blue, size: 32),
         title: Text(note.title, style: TextStyle(fontWeight: FontWeight.w500)),
         subtitle: Text(note.date, style: TextStyle(color: Colors.grey[600])),
-        trailing: note.hasAttachment
+        /* trailing: note.hasAttachment
             ? Icon(Icons.attach_file, color: Colors.grey)
-            : null,
+            : null, */
         onTap: () {
           context.push("/notes/${note.id}");
         },

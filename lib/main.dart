@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:notebook/src/config/app_theme.dart';
 import 'package:notebook/src/config/routes.dart';
 import 'package:notebook/src/providers/notes_provider.dart';
+
 import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(
     MultiProvider(
       providers: [

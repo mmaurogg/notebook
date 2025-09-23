@@ -16,8 +16,8 @@ final router = GoRouter(
         GoRoute(
           path: ':id',
           builder: (context, state) {
-            final id = state.pathParameters['id'] ?? '';
-            return NoteDetailPage(id: id);
+            final id = state.pathParameters['id'] ?? '0';
+            return NoteDetailPage(id: int.parse(id));
           },
         ),
       ],
