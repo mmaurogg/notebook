@@ -1,4 +1,4 @@
-import 'package:notebook/src/model/note_model.dart';
+import 'package:notebook/src/domain/models/note_model.dart';
 
 abstract class NotesRepository {
   Future<List<Note>> fetchNotes();

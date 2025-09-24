@@ -1,11 +1,11 @@
-import 'package:notebook/src/data/repository/notes_repository.dart';
+import 'package:notebook/src/data/repositories/notes_repository.dart';
 import 'package:notebook/src/data/services/local/data_base.dart';
-import 'package:notebook/src/model/note_model.dart';
+import 'package:notebook/src/domain/models/note_model.dart';
 
 class NotesRepositoryImp implements NotesRepository {
-  final SqlDatabase sqlDatabase = SqlDatabase.instance;
+  final SqlDatabase sqlDatabase;
 
-  // NotesRepositoryImp(this.sqlDatabase);
+  NotesRepositoryImp({required this.sqlDatabase});
 
   @override
   Future<void> addNote(Note note) {
