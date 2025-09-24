@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:notebook/src/ui/view_models/home_view_model.dart';
+import 'package:go_router/go_router.dart';
+import 'package:notebook/src/ui/view_models/notes_view_model.dart';
 import 'package:notebook/src/ui/widgets/note_short_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -8,16 +9,15 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<HomeViewModel>();
+    final viewModel = context.watch<NotesViewModel>();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(centerTitle: true, title: Text("Notes")),
         body: HomeView(viewModel: viewModel),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            final note = viewModel.getFakeNote();
-            viewModel.addNote(note);
-            //context.read<HomeViewModel>().addNote(note);
+            context.push('/add');
+            //viewModel.loadNotes();
           },
           child: Icon(Icons.add),
         ),
@@ -27,7 +27,7 @@ class HomePage extends StatelessWidget {
 }
 
 class HomeView extends StatefulWidget {
-  final HomeViewModel viewModel;
+  final NotesViewModel viewModel;
 
   const HomeView({super.key, required this.viewModel});
 
@@ -38,14 +38,13 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
-    context.read<HomeViewModel>().loadNotes();
-    //widget.viewModel.loadNotes();
+    widget.viewModel.loadNotes();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final notes = context.watch<HomeViewModel>().notes;
+    final notes = context.watch<NotesViewModel>().notes;
 
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -69,7 +68,7 @@ class _HomeViewState extends State<HomeView> {
                 onDismissed: (direction) {
                   //widget.viewModel
                   context
-                      .read<HomeViewModel>()
+                      .read<NotesViewModel>()
                       .removeNote(note)
                       .then(
                         (_) => ScaffoldMessenger.of(context).showSnackBar(
