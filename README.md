@@ -42,7 +42,8 @@ El proyecto está desarrollado con una arquitectura **Model-View-ViewModel (MVVM
 - **Capa de Data:** Proporciona los datos necesarios para el funcionamiento de la aplicación. Está compuesta por:  
   - **Repositorios:** Definen interfaces que exponen la información en un formato que el `ViewModel` puede consumir. Cada repositorio cuenta con su implementación concreta según el servicio utilizado.  
   - **Servicios:** Contienen la lógica para acceder a los datos en bruto desde su fuente de almacenamiento. En este caso, toda la data proviene de una base de datos SQLite local.  
-- **Capa de Dominio:** Define los modelos de datos que se usan entre capas, asegurando consistencia y claridad en el intercambio de información.  
+- **Capa de Dominio:** Define los modelos de datos que se usan entre capas, asegurando consistencia y claridad en el intercambio de información.
+<img width="929" height="194" alt="Captura de pantalla 2025-09-24 a las 6 14 26 p  m" src="https://github.com/user-attachments/assets/e404cee0-ef0c-4a61-8d32-b1e7a44f11b9" />
 
 Este proyecto sigue los **principios SOLID** para mantener un diseño escalable y de fácil mantenimiento. En la implementación:
 - **S (Single Responsibility Principle):** Cada capa (modelos, servicios, repositorios, view models y vistas) tiene una única responsabilidad claramente definida, evitando mezclar lógica de negocio con lógica de presentación.
