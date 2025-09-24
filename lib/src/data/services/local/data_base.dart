@@ -1,4 +1,4 @@
-import 'package:notebook/src/model/note_model.dart';
+import 'package:notebook/src/domain/models/note_model.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 

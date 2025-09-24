@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:notebook/src/model/note_model.dart';
-import 'package:notebook/src/providers/notes_provider.dart';
-import 'package:provider/provider.dart';
+import 'package:notebook/src/domain/models/note_model.dart';
+import 'package:notebook/src/ui/view_models/home_view_model.dart';
 
 class NoteDetailPage extends StatefulWidget {
   final int id;
-  const NoteDetailPage({super.key, required this.id});
+  final HomeViewModel viewModel;
+
+  const NoteDetailPage({super.key, required this.id, required this.viewModel});
 
   @override
   State<NoteDetailPage> createState() => _NoteDetailPageState();
@@ -16,7 +17,7 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
 
   @override
   void initState() {
-    context.read<NotesProvider>().getNoteById(widget.id).then((value) {
+    widget.viewModel.getNoteById(widget.id).then((value) {
       setState(() {
         note = value;
       });
@@ -30,14 +31,26 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
       appBar: AppBar(title: Text('Note Detail')),
       body: note == null
           ? Center(child: CircularProgressIndicator())
-          : NoteDetailView(note: note!),
+          : NoteDetailView(
+              note: note!,
+              onDelete: () => widget.viewModel.removeNote(note!),
+              onEdit: () => widget.viewModel.updateNote(note!),
+            ),
     );
   }
 }
 
 class NoteDetailView extends StatelessWidget {
   final Note note;
-  const NoteDetailView({super.key, required this.note});
+  final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
+
+  const NoteDetailView({
+    super.key,
+    required this.note,
+    this.onDelete,
+    this.onEdit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -95,13 +108,10 @@ class NoteDetailView extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(onPressed: () {}, child: Text('Edit')),
+                  TextButton(onPressed: onEdit, child: Text('Edit')),
                   SizedBox(width: 8),
                   TextButton(
-                    onPressed: () {
-                      context.read<NotesProvider>().removeNote(note);
-                      Navigator.pop(context);
-                    },
+                    onPressed: onDelete,
                     child: Text('Delete', style: TextStyle(color: Colors.red)),
                   ),
                   SizedBox(width: 8),

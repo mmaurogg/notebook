@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:notebook/src/model/note_model.dart';
+import 'package:notebook/src/domain/models/note_model.dart';
 
 class NoteShortWidget extends StatelessWidget {
   final Note note;
