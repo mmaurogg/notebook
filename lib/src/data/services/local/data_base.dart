@@ -22,7 +22,7 @@ class SqlDatabase {
     var dbPath = await getDatabasesPath();
     String path = join(dbPath, filePath);
 
-    return openDatabase(join(path), onCreate: _onCreate, version: 1);
+    return openDatabase(join(path), onCreate: _onCreate, version: 3);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -30,7 +30,10 @@ class SqlDatabase {
       CREATE TABLE $tableNotes (
         id INTEGER PRIMARY KEY,
         title TEXT,
-        date TEXT
+        content TEXT,
+        date TEXT,
+        tag TEXT,
+        attachment TEXT
       )
     ''');
   }
@@ -54,7 +57,7 @@ class SqlDatabase {
     final db = await instance.database;
     final note = await db.query(
       tableNotes,
-      columns: ['id', 'title', 'date'],
+      columns: ['id', 'content', 'title', 'date', 'tag', 'attachment'],
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -66,7 +69,7 @@ class SqlDatabase {
     }
   }
 
-  /* Future update(Note note) async {
+  Future update(Note note) async {
     final db = await instance.database;
     await db.update(
       tableNotes,
@@ -74,7 +77,7 @@ class SqlDatabase {
       where: 'id = ?',
       whereArgs: [note.id],
     );
-  } */
+  }
 
   Future delete(int id) async {
     final db = await instance.database;

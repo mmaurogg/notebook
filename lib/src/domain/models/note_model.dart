@@ -1,22 +1,34 @@
+import 'dart:io';
+
+enum TagCategory { personal, work, ideas, others }
+
 class Note {
   final int id;
   final String title;
+  final String content;
   final String date;
-  //final bool hasAttachment;
+  final List<TagCategory>? tag;
+  final File? attachment;
 
   Note({
     required this.id,
     required this.title,
+    required this.content,
     required this.date,
-    //this.hasAttachment = false,
+    this.tag,
+    this.attachment,
   });
+
+  bool get hasAttachment => attachment != null;
 
   factory Note.fromMap(Map<String, dynamic> map) {
     return Note(
       id: map['id'],
       title: map['title'],
+      content: map['content'],
       date: map['date'],
-      //hasAttachment: map['hasAttachment'] == 1,
+      tag: map['tag'],
+      attachment: map['attachment'],
     );
   }
 
@@ -24,8 +36,10 @@ class Note {
     return {
       'id': id,
       'title': title,
+      'content': content,
       'date': date,
-      //'hasAttachment': hasAttachment ? 1 : 0,
+      'tag': tag,
+      'attachment': attachment,
     };
   }
 }

@@ -1,18 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:notebook/src/config/app_theme.dart';
 import 'package:notebook/src/domain/models/note_model.dart';
-import 'package:notebook/src/ui/view_models/home_view_model.dart';
+import 'package:notebook/src/ui/view_models/notes_view_model.dart';
+import 'package:provider/provider.dart';
 
-class NoteDetailPage extends StatefulWidget {
+class NoteDetailPage extends StatelessWidget {
   final int id;
-  final HomeViewModel viewModel;
-
-  const NoteDetailPage({super.key, required this.id, required this.viewModel});
+  const NoteDetailPage({super.key, required this.id});
 
   @override
-  State<NoteDetailPage> createState() => _NoteDetailPageState();
+  Widget build(BuildContext context) {
+    final viewModel = context.watch<NotesViewModel>();
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(centerTitle: true, title: Text("Note detail")),
+        body: NoteDetailView(id: id, viewModel: viewModel),
+      ),
+    );
+  }
 }
 
-class _NoteDetailPageState extends State<NoteDetailPage> {
+class NoteDetailView extends StatefulWidget {
+  final int id;
+  final NotesViewModel viewModel;
+
+  const NoteDetailView({super.key, required this.id, required this.viewModel});
+
+  @override
+  State<NoteDetailView> createState() => _NoteDetailViewState();
+}
+
+class _NoteDetailViewState extends State<NoteDetailView> {
   Note? note;
 
   @override
@@ -27,25 +46,29 @@ class _NoteDetailPageState extends State<NoteDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Note Detail')),
-      body: note == null
-          ? Center(child: CircularProgressIndicator())
-          : NoteDetailView(
-              note: note!,
-              onDelete: () => widget.viewModel.removeNote(note!),
-              onEdit: () => widget.viewModel.updateNote(note!),
-            ),
+    if (note == null) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    return NoteDetailBody(
+      note: note!,
+      onDelete: () {
+        context.read<NotesViewModel>().removeNote(note!);
+        context.pop();
+      },
+      onEdit: () {
+        context.pushReplacement('/edit/${note!.id}');
+      },
     );
   }
 }
 
-class NoteDetailView extends StatelessWidget {
+class NoteDetailBody extends StatelessWidget {
   final Note note;
   final VoidCallback? onDelete;
   final VoidCallback? onEdit;
 
-  const NoteDetailView({
+  const NoteDetailBody({
     super.key,
     required this.note,
     this.onDelete,
@@ -56,69 +79,132 @@ class NoteDetailView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Title: ${note.title}',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Date: ${note.date}',
-                style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-              ),
-              SizedBox(height: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(
+                    note.title.toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(
+                  Icons.calendar_month_rounded,
+                  size: 16,
+                  color: AppTheme().getTheme().colorScheme.secondary,
+                ),
+                SizedBox(width: 5),
+                Text(
+                  note.date,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppTheme().getTheme().colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
 
-              Text(
-                'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas "Letra',
-              ),
-
-              SizedBox(height: 24),
-
-              /*  if (note.hasAttachment)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+            Card(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
                   children: [
-                    Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.blueAccent.withAlpha(30),
-                      ),
-                      child: Icon(
-                        Icons.attachment_rounded,
-                        size: 24,
-                        color: Colors.grey[600],
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          'Note',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 8),
-                    Text(
-                      'This note has attachments',
-                      style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                    ),
+                    SizedBox(height: 8),
+                    Row(children: [Text(note.content)]),
                   ],
-                ), */
-              SizedBox(height: 24),
+                ),
+              ),
+            ),
 
+            SizedBox(height: 24),
+
+            if (note.hasAttachment) ...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(onPressed: onEdit, child: Text('Edit')),
-                  SizedBox(width: 8),
-                  TextButton(
-                    onPressed: onDelete,
-                    child: Text('Delete', style: TextStyle(color: Colors.red)),
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent.withAlpha(30),
+                    ),
+                    child: Icon(
+                      Icons.attachment_rounded,
+                      size: 24,
+                      color: Colors.grey[600],
+                    ),
                   ),
                   SizedBox(width: 8),
+                  Text(
+                    'This note has attachments',
+                    style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                  ),
                 ],
               ),
+              SizedBox(height: 24),
             ],
-          ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: onEdit,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    backgroundColor: AppTheme()
+                        .getTheme()
+                        .colorScheme
+                        .secondary,
+                    foregroundColor: Colors.white,
+                    elevation: 5,
+                  ),
+                  child: const Text('Edit'),
+                ),
+                SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: onDelete,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    backgroundColor: AppTheme().getTheme().colorScheme.error,
+                    foregroundColor: Colors.white,
+                    elevation: 5,
+                  ),
+                  child: const Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

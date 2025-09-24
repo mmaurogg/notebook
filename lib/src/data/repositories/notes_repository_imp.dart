@@ -29,7 +29,6 @@ class NotesRepositoryImp implements NotesRepository {
 
   @override
   Future<void> updateNote(Note note) {
-    // TODO: implement updateNote
-    throw UnimplementedError();
+    return sqlDatabase.update(note);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notebook/src/config/app_theme.dart';
 import 'package:notebook/src/domain/models/note_model.dart';
 
 class NoteShortWidget extends StatelessWidget {
@@ -18,12 +19,28 @@ class NoteShortWidget extends StatelessWidget {
         ],
       ),
       child: ListTile(
-        leading: Icon(Icons.note, color: Colors.blue, size: 32),
-        title: Text(note.title, style: TextStyle(fontWeight: FontWeight.w500)),
+        leading: Container(
+          color: AppTheme().getTheme().colorScheme.primary.withAlpha(30),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Icon(
+              Icons.edit_document,
+              color: AppTheme().getTheme().colorScheme.primary,
+              size: 32,
+            ),
+          ),
+        ),
+        title: Text(
+          note.title,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: AppTheme().getTheme().colorScheme.primary,
+          ),
+        ),
         subtitle: Text(note.date, style: TextStyle(color: Colors.grey[600])),
-        /* trailing: note.hasAttachment
+        trailing: note.hasAttachment
             ? Icon(Icons.attach_file, color: Colors.grey)
-            : null, */
+            : null,
         onTap: () {
           context.push("/notes/${note.id}");
         },
