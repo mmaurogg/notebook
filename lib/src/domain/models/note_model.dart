@@ -1,13 +1,21 @@
 import 'dart:io';
 
-enum TagCategory { personal, work, ideas, others }
+enum TagsCategory { personal, work, ideas, others }
+
+TagsCategory? tagsCategoryFromString(String name) {
+  try {
+    return TagsCategory.values.firstWhere((tag) => tag.name == name);
+  } catch (e) {
+    return null;
+  }
+}
 
 class Note {
   final int id;
   final String title;
   final String content;
   final String date;
-  final List<TagCategory>? tag;
+  final List<TagsCategory>? tags;
   final File? attachment;
 
   Note({
@@ -15,7 +23,7 @@ class Note {
     required this.title,
     required this.content,
     required this.date,
-    this.tag,
+    this.tags,
     this.attachment,
   });
 
@@ -27,18 +35,27 @@ class Note {
       title: map['title'],
       content: map['content'],
       date: map['date'],
-      tag: map['tag'],
+      tags: map['tags'] == null
+          ? null
+          : (map['tags'] as String?)
+                ?.split(',')
+                .map((name) => tagsCategoryFromString(name))
+                .where((tag) => tag != null)
+                .cast<TagsCategory>()
+                .toList(),
       attachment: map['attachment'],
     );
   }
 
   Map<String, dynamic> toMap() {
+    final tagsAsString = tags?.map((tag) => tag.name).join(',');
+
     return {
       'id': id,
       'title': title,
       'content': content,
       'date': date,
-      'tag': tag,
+      'tags': tags == null ? null : tagsAsString,
       'attachment': attachment,
     };
   }

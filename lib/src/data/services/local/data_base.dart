@@ -32,7 +32,7 @@ class SqlDatabase {
         title TEXT,
         content TEXT,
         date TEXT,
-        tag TEXT,
+        tags TEXT,
         attachment TEXT
       )
     ''');
@@ -57,7 +57,7 @@ class SqlDatabase {
     final db = await instance.database;
     final note = await db.query(
       tableNotes,
-      columns: ['id', 'content', 'title', 'date', 'tag', 'attachment'],
+      columns: ['id', 'content', 'title', 'date', 'tags', 'attachment'],
       where: 'id = ?',
       whereArgs: [id],
     );

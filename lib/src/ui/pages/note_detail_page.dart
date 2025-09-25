@@ -140,6 +140,32 @@ class NoteDetailBody extends StatelessWidget {
 
             SizedBox(height: 24),
 
+            if (note.tags != null && note.tags!.isNotEmpty) ...[
+              const Text(
+                "Etiquetas",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 4.0,
+                children: note.tags!.map((tag) {
+                  return Chip(
+                    label: Text(
+                      tag.name,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    backgroundColor: AppTheme().getTheme().colorScheme.primary,
+                    labelStyle: TextStyle(color: Colors.white),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: 24),
+            ],
+
             if (note.hasAttachment) ...[
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

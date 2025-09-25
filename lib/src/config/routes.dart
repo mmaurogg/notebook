@@ -30,8 +30,8 @@ final router = GoRouter(
     GoRoute(
       path: '/edit/:id',
       builder: (context, state) {
-        final id = state.pathParameters['id'] ?? '0';
-        return NoteForm(noteId: int.parse(id));
+        final id = state.pathParameters['id'];
+        return NoteForm(noteId: int.parse(id!));
       },
     ),
   ],
