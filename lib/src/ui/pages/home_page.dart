@@ -45,6 +45,19 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     final notes = context.watch<NotesViewModel>().notes;
 
+    if (notes.isEmpty) {
+      return const Center(
+        child: Padding(
+          padding: EdgeInsets.all(15.0),
+          child: const Text(
+            'No hay notas para mostrar\nPrueba agregar tu primera nota dando clic en el boton "+" ',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16),
+          ),
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: Scrollbar(
