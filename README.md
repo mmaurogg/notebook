@@ -6,11 +6,13 @@ Notebook es una aplicación Flutter para gestionar notas personales, ideas y tar
 
 Con esta app tu puedes:
 - Crear, editar y eliminar notas
-- Adjuntar archivos a las notas
 - Categorizar notas por tipo (personal, trabajo, ideas, otros)
 - Persistencia local con SQLite
 - Navegación moderna con go_router
 - Gestión de estado con Provider y MVVM
+
+  **Proximamente**
+- Adjuntar archivos a las notas
 
 ## Estructura del proyecto
 
