@@ -17,7 +17,6 @@ class HomePage extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             context.push('/add');
-            //viewModel.loadNotes();
           },
           child: Icon(Icons.add),
         ),
@@ -57,7 +56,7 @@ class _HomeViewState extends State<HomeView> {
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Dismissible(
-                key: Key(note.date.toString()),
+                key: Key(note.id.toString()),
                 background: Container(
                   color: Colors.red,
                   alignment: Alignment.centerRight,
@@ -65,10 +64,8 @@ class _HomeViewState extends State<HomeView> {
                   child: Icon(Icons.delete, color: Colors.white),
                 ),
                 child: NoteShortWidget(note: note),
-                onDismissed: (direction) {
-                  //widget.viewModel
-                  context
-                      .read<NotesViewModel>()
+                onDismissed: (direction) async {
+                  await widget.viewModel
                       .removeNote(note)
                       .then(
                         (_) => ScaffoldMessenger.of(context).showSnackBar(
