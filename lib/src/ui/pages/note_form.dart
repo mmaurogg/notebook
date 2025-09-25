@@ -22,6 +22,7 @@ class _NoteFormState extends State<NoteForm> {
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
 
+  final Set<TagsCategory> _selectedTags = {};
   File? _attachment;
 
   @override
@@ -36,6 +37,11 @@ class _NoteFormState extends State<NoteForm> {
       if (value != null) {
         _titleController.text = value.title;
         _contentController.text = value.content;
+        if (value.tags != null) {
+          setState(() {
+            _selectedTags.addAll(value.tags!);
+          });
+        }
         if (value.hasAttachment) {
           setState(() {
             //_attachment = File(value.attachment!);
@@ -63,6 +69,7 @@ class _NoteFormState extends State<NoteForm> {
           : DateTime.now().millisecondsSinceEpoch;
       final title = _titleController.text.trim();
       final content = _contentController.text.trim();
+      final tags = _selectedTags.toList();
       final attachment = _attachment;
 
       final note = Note(
@@ -70,6 +77,7 @@ class _NoteFormState extends State<NoteForm> {
         title: title,
         date: DateFormat('yyyy-MMM-dd').format(DateTime.now()),
         content: content,
+        tags: tags,
         attachment: attachment,
       );
 
@@ -88,7 +96,10 @@ class _NoteFormState extends State<NoteForm> {
       }
 
       _formKey.currentState!.reset();
-      setState(() => _attachment = null);
+      setState(() {
+        _attachment = null;
+        _selectedTags.clear();
+      });
       context.pop();
     }
   }
@@ -137,7 +148,44 @@ class _NoteFormState extends State<NoteForm> {
               ),
               const SizedBox(height: 16),
 
-              // Adjunto
+              // Etiquetas
+              const Text(
+                "Etiquetas",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 8),
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 4.0,
+                children: TagsCategory.values.map((tag) {
+                  final isSelected = _selectedTags.contains(tag);
+                  return FilterChip(
+                    label: Text(tag.name),
+                    selected: isSelected,
+                    onSelected: (selected) {
+                      setState(() {
+                        if (selected) {
+                          _selectedTags.add(tag);
+                        } else {
+                          _selectedTags.remove(tag);
+                        }
+                      });
+                    },
+                    selectedColor: AppTheme().getTheme().primaryColor,
+                    labelStyle: TextStyle(
+                      color: isSelected
+                          ? Colors.white
+                          : AppTheme().getTheme().textTheme.bodyLarge?.color,
+                    ),
+                    checkmarkColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 16),
+              /*  // Adjunto
               GestureDetector(
                 onTap: _pickAttachment,
                 child: Card(
@@ -175,7 +223,7 @@ class _NoteFormState extends State<NoteForm> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 24), */
 
               // Botón Guardar
               ElevatedButton.icon(
